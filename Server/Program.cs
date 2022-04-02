@@ -1,27 +1,77 @@
-﻿using System.Net;
+﻿using System.Runtime.InteropServices;
+using System.Net;
 var httpListener = new HttpListener();
 
 httpListener.Prefixes.Add("http://localhost:23234/");
 httpListener.Start();
+
 var IsStarted = true;
-var count = 0;
 while (IsStarted)
 {
     var context = httpListener.GetContext();
     var request = context.Request;
-
-
+    var path = request.RawUrl;
     var response = context.Response;
-    string responseStr = $"<html><head><meta charset='utf8'></head><body>Привет мир! {count}</body></html>";
-    byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseStr);
+    switch (path.ToLower())
+    {
+        case "/ping":
+            Ping.StatusServer(context);
+            break;
 
-    response.ContentLength64 = buffer.Length;
-    var output = response.OutputStream;
-    output.Write(buffer, 0, buffer.Length);
+        case "/postinputdata":
+            OutStreamPrint.Print($"{PostInputData.str}", context);
+            break;
 
-    output.Close();
-    count++;
+        case "/getanswer":
+            OutStreamPrint.Print($"{GetAnswer.str}", context);
+            break;
+
+        case "/stop":
+            httpListener.Stop();
+            IsStarted = false;
+            break;
+
+        default:
+            OutStreamPrint.Print($"{Home.str}", context);
+            break;
+
+    }
 }
-httpListener.Stop();
-Console.WriteLine("Обработка подключений завершена");
-Console.ReadKey();
+
+internal static class GetAnswer
+{
+    internal static string str = "GetAnswer";
+}
+
+internal static class PostInputData
+{
+    internal static string str = "PostInputData";
+}
+
+public static class OutStreamPrint
+{
+    public static void Print(string str, HttpListenerContext context)
+    {
+        var request = context.Request;
+        var response = context.Response;
+        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(str);
+
+        response.ContentLength64 = buffer.Length;
+        var output = response.OutputStream;
+        output.Write(buffer, 0, buffer.Length);
+
+        output.Close();
+    }
+}
+internal static class Ping
+{
+    internal static void StatusServer(HttpListenerContext context)
+    {
+        var code = context.Response.StatusCode;
+        OutStreamPrint.Print(code.ToString(), context);
+    }
+}
+public class Home
+{
+    public static string str = "Home";
+}

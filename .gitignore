@@ -1,9 +1,11 @@
 .vscode
 Client/bin/
 Client/obj/
+Client/.vscode/
 
 Server/bin/
 Server/obj/
+Server/.vscode/
 
 Serializer/bin/
 Serializer/obj/
