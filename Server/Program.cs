@@ -45,7 +45,7 @@ internal static class GetAnswer
 
 internal static class PostInputData
 {
-    internal static string str = "PostInputData";
+    internal static string str = "\t PostInputData \n";
 }
 
 public static class OutStreamPrint
