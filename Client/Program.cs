@@ -1,8 +1,11 @@
-﻿namespace ClientListenerRelationship.Client
+﻿using System.Net.Http;
+using System.Net.Http.Json;
+
+namespace ClientListenerRelationship.Client
 {
     internal class Program
     {
-        static void Main()
+        public static void Main()
         {
             while (true)
             {
@@ -52,11 +55,18 @@
                     case "postinputdata":
                         try
                         {
-                            HttpClient client = new HttpClient();
-                            var response = client.GetAsync("http://localhost:23234/postinputdata").Result;
-                            var responseBody = response.Content.ReadAsStringAsync().Result;
-                            System.Console.WriteLine(responseBody);
+                            using (HttpClient client = new HttpClient())
+                            {
+                                string? data = System.Console.ReadLine();
+                                var content = new FormUrlEncodedContent(new[]
+                                {
+                                    new KeyValuePair<string, string>("json", data)
+                                });
 
+                                var response = client.PostAsync("http://localhost:23234/postinputdata",content).Result;
+                                var responseBody = response.Content.ReadAsStringAsync().Result;
+                                System.Console.WriteLine(responseBody);
+                            }
                         }
                         catch (HttpRequestException e)
                         {
