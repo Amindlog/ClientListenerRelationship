@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Server.Serialize;
 using Newtonsoft.Json;
 var httpListener = new HttpListener();
 
@@ -22,13 +23,14 @@ while (IsStarted)
             var body = request.InputStream;
             var encoding = request.ContentEncoding;
             var reader = new System.IO.StreamReader(body, encoding);
-            Input? input = JsonSerializer.Deserialize<Input>(reader);
-            string s = reader.ReadToEnd();
+            string s = reader.ReadLine();
+            Calcus.AddInput(s);
+            OutStreamPrint.Print("Данные приняли, обрабатываем. ответ от сервера /GetAnswer ",context);
             reader.Close();
             break;
 
         case "/getanswer":
-            OutStreamPrint.Print($"{GetAnswer.str}", context);
+            OutStreamPrint.Print($"{Calcus.JsonResponse()}", context);
             break;
 
         case "/stop":

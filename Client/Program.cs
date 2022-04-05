@@ -60,10 +60,13 @@ namespace ClientListenerRelationship.Client
                         {
                             using (HttpClient client = new HttpClient())
                             {
-                                var json = JsonConvert.SerializeObject(System.Console.ReadLine());
+                                string? json = System.Console.ReadLine();
                                 var content = new StringContent(json, UnicodeEncoding.UTF8, "Application/json");
                                 var response = client.PostAsync("http://localhost:23234/postinputdata",content).Result;
                                 string resultConvert = response.Content.ReadAsStringAsync().Result;
+                                System.Console.ForegroundColor = System.ConsoleColor.Blue;
+                                System.Console.WriteLine(resultConvert);
+                                System.Console.ResetColor();
                             }
                         }
                         catch (HttpRequestException e)
@@ -85,7 +88,10 @@ namespace ClientListenerRelationship.Client
                                 var response = client.GetAsync("http://localhost:23234/getanswer").Result;
                                 response.EnsureSuccessStatusCode();
                                 var responseBody = response.Content.ReadAsStringAsync().Result;
+                                System.Console.ForegroundColor = System.ConsoleColor.Cyan;
+                                System.Console.WriteLine("Ответ: \t");
                                 System.Console.WriteLine(responseBody);
+                                System.Console.ResetColor();
                             }
                         }
                         catch (HttpRequestException e)

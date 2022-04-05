@@ -1,17 +1,20 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Server.Serialize
 {
-    public static class Serialaze
+    public class Calcus
     {
-        private static Input input = new Input();
+         private static Input input = new Input();
         private static Output output = new Output();
 
 
-        public static void AddInput(string strJson)
+        public static void AddInput(string s)
         {
-            Input? input = JsonSerializer.Deserialize<Input>(strJson);
+            input = JsonConvert.DeserializeObject<Input>(s);
             TaskComplerion();
         }
         private static void TaskComplerion()
@@ -36,7 +39,7 @@ namespace Server.Serialize
         }
         public static string JsonResponse()
         {
-            return JsonSerializer.Serialize(output);
+            return JsonConvert.SerializeObject(output);
         }
     }
 }

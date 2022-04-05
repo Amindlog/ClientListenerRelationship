@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 
 namespace Server.Serialize
 {
-    public class Output : IOutput
+    public class Output
     {
         public decimal SumResult { get ; set ; }
         public int MulResult { get ; set ; }
         public decimal[] SortedInputs { get ; set ; }
+
     }
 }
