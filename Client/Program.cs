@@ -1,5 +1,8 @@
-﻿using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Mime;
+using System.Text;
+using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace ClientListenerRelationship.Client
 {
@@ -57,15 +60,10 @@ namespace ClientListenerRelationship.Client
                         {
                             using (HttpClient client = new HttpClient())
                             {
-                                string? data = System.Console.ReadLine();
-                                var content = new FormUrlEncodedContent(new[]
-                                {
-                                    new KeyValuePair<string, string>("json", data)
-                                });
-
+                                var json = JsonConvert.SerializeObject(System.Console.ReadLine());
+                                var content = new StringContent(json, UnicodeEncoding.UTF8, "Application/json");
                                 var response = client.PostAsync("http://localhost:23234/postinputdata",content).Result;
-                                var responseBody = response.Content.ReadAsStringAsync().Result;
-                                System.Console.WriteLine(responseBody);
+                                string resultConvert = response.Content.ReadAsStringAsync().Result;
                             }
                         }
                         catch (HttpRequestException e)

@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Net;
+﻿using System.Net;
+using Newtonsoft.Json;
 var httpListener = new HttpListener();
 
 httpListener.Prefixes.Add("http://localhost:23234/");
@@ -20,7 +19,12 @@ while (IsStarted)
             break;
 
         case "/postinputdata":
-            OutStreamPrint.Print($"{PostInputData.str}", context);
+            var body = request.InputStream;
+            var encoding = request.ContentEncoding;
+            var reader = new System.IO.StreamReader(body, encoding);
+            Input? input = JsonSerializer.Deserialize<Input>(reader);
+            string s = reader.ReadToEnd();
+            reader.Close();
             break;
 
         case "/getanswer":
@@ -38,6 +42,13 @@ while (IsStarted)
 
     }
 }
+public class Input
+    {
+        // {"K":10,"Sums":[1.01,2.02],"Muls":[1,4]}
+        public int K { get; set; }
+        public decimal[] Sums { get; set; }
+        public int[] Muls { get; set; }
+    }
 
 internal static class GetAnswer
 {
@@ -54,7 +65,6 @@ public static class OutStreamPrint
 {
     public static void Print(string str, HttpListenerContext context)
     {
-        var request = context.Request;
         var response = context.Response;
         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(str);
 
